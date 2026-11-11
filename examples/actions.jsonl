@@ -1,0 +1,15 @@
+{"id":"a-001","type":"tool_call","requester":"agent-support","tool":"search_docs","expect":{"decision":"ALLOW","rule_ids":[]}}
+{"id":"a-002","type":"tool_call","requester":"agent-support","tool":"unvetted_llm_api","expect":{"decision":"DENY","rule_ids":["R-TOOL-003"]}}
+{"id":"a-003","type":"send","requester":"agent-support","audience":"internal","text":"Quarterly summary attached.","expect":{"decision":"ALLOW","rule_ids":[]}}
+{"id":"a-004","type":"send","requester":"agent-support","audience":"internal","text":"Please contact jane.doe@example.com about the case.","expect":{"decision":"DENY","rule_ids":["R-PII-001"]}}
+{"id":"a-005","type":"send","requester":"agent-support","audience":"internal","text":"Applicant id 123-45-6789 is on file.","expect":{"decision":"DENY","rule_ids":["R-PII-001"]}}
+{"id":"a-006","type":"spend","requester":"agent-procure","amount_usd":120,"expect":{"decision":"ALLOW","rule_ids":[]}}
+{"id":"a-007","type":"spend","requester":"agent-procure","amount_usd":2500,"expect":{"decision":"PENDING","rule_ids":["R-SPEND-002"]}}
+{"id":"a-008","type":"deploy","requester":"agent-release","environment":"staging","expect":{"decision":"ALLOW","rule_ids":[]}}
+{"id":"a-009","type":"deploy","requester":"agent-release","environment":"production","expect":{"decision":"PENDING","rule_ids":["R-DEPLOY-004"]}}
+{"id":"a-010","type":"send","requester":"agent-support","audience":"external","text":"Release notes attached.","expect":{"decision":"PENDING","rule_ids":["R-EXTSEND-005"]}}
+{"id":"a-011","type":"rag_ingest","requester":"agent-research","source":"internal-policy-wiki","expect":{"decision":"ALLOW","rule_ids":[]}}
+{"id":"a-012","type":"rag_ingest","requester":"agent-research","source":"scraped-forum","expect":{"decision":"DENY","rule_ids":["R-RAG-006"]}}
+{"id":"a-013","type":"send","requester":"agent-support","audience":"internal","text":"Draft. Confidential: board only.","expect":{"decision":"DENY","rule_ids":["R-LABEL-007"]}}
+{"id":"a-014","type":"tool_call","requester":"agent-support","tool":"search_docs","shell_cmd":"ls","expect":{"decision":"DENY","rule_ids":["FAIL-CLOSED"]}}
+{"id":"a-015","type":"send","requester":"agent-support","audience":"external","text":"Write to a.smith@example.com.","expect":{"decision":"DENY","rule_ids":["R-EXTSEND-005","R-PII-001"]}}

@@ -1,0 +1,89 @@
+{
+  "version": 1,
+  "approvers": ["risk-officer", "security-lead"],
+  "action_types": ["tool_call", "send", "spend", "deploy", "rag_ingest"],
+  "known_fields": ["tool", "text", "audience", "amount_usd", "environment", "source"],
+  "rules": [
+    {
+      "id": "R-PII-001",
+      "title": "Outbound text contains an email address or a US SSN-shaped number",
+      "severity": "high",
+      "ticket": "GRC-104",
+      "applies_to": ["send"],
+      "match": {
+        "field": "text",
+        "op": "regex",
+        "value": "[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}|\\b\\d{3}-\\d{2}-\\d{4}\\b"
+      },
+      "effect": "deny"
+    },
+    {
+      "id": "R-SPEND-002",
+      "title": "Spend over the 500 USD per-action limit",
+      "severity": "medium",
+      "ticket": "GRC-105",
+      "applies_to": ["spend"],
+      "match": {"field": "amount_usd", "op": "gt", "value": 500},
+      "effect": "require_human_approval"
+    },
+    {
+      "id": "R-TOOL-003",
+      "title": "Tool is not on the approved allowlist",
+      "severity": "high",
+      "ticket": "GRC-101",
+      "applies_to": ["tool_call"],
+      "match": {
+        "field": "tool",
+        "op": "in",
+        "value": ["search_docs", "summarize_text", "read_ticket", "draft_reply"],
+        "negate": true
+      },
+      "effect": "deny"
+    },
+    {
+      "id": "R-DEPLOY-004",
+      "title": "Deploy to production needs a human sign-off",
+      "severity": "high",
+      "ticket": "GRC-103",
+      "applies_to": ["deploy"],
+      "match": {"field": "environment", "op": "equals", "value": "production"},
+      "effect": "require_human_approval"
+    },
+    {
+      "id": "R-EXTSEND-005",
+      "title": "Message to an external audience needs a human sign-off",
+      "severity": "medium",
+      "ticket": "GRC-108",
+      "applies_to": ["send"],
+      "match": {"field": "audience", "op": "equals", "value": "external"},
+      "effect": "require_human_approval"
+    },
+    {
+      "id": "R-RAG-006",
+      "title": "Retrieval source is not on the approved data source list",
+      "severity": "high",
+      "ticket": "GRC-102",
+      "applies_to": ["rag_ingest"],
+      "match": {
+        "field": "source",
+        "op": "in",
+        "value": ["internal-policy-wiki", "approved-vendor-docs", "public-regulation-text"],
+        "negate": true
+      },
+      "effect": "deny"
+    },
+    {
+      "id": "R-LABEL-007",
+      "title": "Outbound text carries a confidentiality marker",
+      "severity": "medium",
+      "ticket": "GRC-104",
+      "applies_to": ["send"],
+      "match": {
+        "field": "text",
+        "op": "contains_any",
+        "value": ["confidential", "internal only", "restricted"]
+      },
+      "effect": "deny"
+    }
+  ]
+}
